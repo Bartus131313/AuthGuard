@@ -1,0 +1,45 @@
+welcome_login: "<blue>Witaj <bold><light_purple>%player%<reset><blue>! Zaloguj się przy pomocy komendy <bold><gold>/login"
+welcome_register: "<blue>Witaj <bold><light_purple>%player%<reset><blue>! Zarejestruj się przy pomocy komendy <bold><gold>/register"
+
+authguard_help: "<blue><bold>Wszystkie dosępne komendy:"
+help_base: "<white>* <yellow>%cmd%</yellow> - <gray>%help%</gray>"
+help_register: "komenda do rejestrowania się"
+help_login: "komenda do logowania się"
+help_authguard_database: "komenda do obsługi bazy danych"
+help_authguard_reload: "komenda do przeładowywania pluginu"
+
+authguard_usage: "<red>Poprawne użycie komendy: <yellow>/authguard %args%</yellow>"
+authguard_reload: "<green>Pomyślnie przeładowano plugin."
+authguard_reload_error: "<red>Nie można przeładować pluginu! kod błędu: <bold>%error_code%"
+authguard_database_unknown_player: "<red>Nie znaleziono gracza: <yellow><bold>%player%"
+authguard_database_remove_success: "<green>Pomyślnie usunięto gracza <yellow><bold>%player%</bold></yellow> z bazy danych."
+authguard_database_remove_error: "<red>Nie można usunąć gracza <yellow><bold>%player%</bold></yellow> z bazy danych."
+authguard_unknown_command: "<red>Niepoprawna komenda: <yellow><bold>%args%"
+authguard_unknown_subcommand: "<red>Niepoprawna podkomenda!"
+no_permission_message: "<red>Nie masz permisji, aby korzystać z tej komendy!"
+
+login_password_error: "<red>Podane hasło jest niepoprawne!"
+login_success_message: "<bold><green>Logowanie ukończone pomyślnie!"
+login_usage: "<red>Poprawne użycie komendy: <gold><bold>/login %args%"
+login_before_register_message: "<red>Musisz się najpierw zarejestrować, aby potem móc się zalogować!"
+login_no_need_message: "<gray>Jesteś już zalogowany."
+
+premium_message: "<green>Wykryliśmy, że korzystasz z konta premium. Wpisz komendę <aqua><bold>/premium</bold><green>, aby następne logowania były automatyczne."
+
+register_passwords_error: "<red>Podane hasła nie są ze sobą zgodne!"
+register_password_length_error: "<red>Twoje hasło musi mieć długość od <bold>6</bold> do <bold>32</bold> znaków!"
+register_captcha_error: "<red>Podana Captcha nie jest poprawna!"
+register_usage: "<red>Poprawne użycie komendy: <gold><bold>/register %args%"
+register_after_login_message: "<gray>Jesteś już zrejestrowany. Teraz możesz się zalogować."
+register_no_need: "<gray>Jesteś już zalogowany. Nie musisz się rejestrować."
+
+password: "hasło"
+
+captcha_message: "<bold><gold>Twoja Captcha"
+captcha: "captcha"
+
+kick_timeout: "<red>Zostałeś wyrzucony po zbyt długim czasie logowania się!"
+kick_login_tries: "<red>Zostałeś wyrzucony po zbyt wielu nieudanych próbach logowania!"
+kick_error: "<red>Ups... napotkałeś na błąd <bold>%error_code%</bold>... \n\n<bold><yellow>Wejdź ponownie na serwer."
+kick_register_success: "<green>Rejestracja ukończona pomyślnie. \n\n<yellow>Wejdź ponownie na serwer."
+kick_database_remove: "<green>Zostałeś usunięty z bazy danych. \n\n<yellow>Wejdź ponownie na serwer i zarejestruj się."

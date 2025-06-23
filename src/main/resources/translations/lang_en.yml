@@ -1,0 +1,45 @@
+welcome_login: "<blue>Welcome <bold><light_purple>%player%<reset><blue>! Log in using the command <bold><gold>/login"
+welcome_register: "<blue>Welcome <bold><light_purple>%player%<reset><blue>! Register using the command <bold><gold>/register"
+
+authguard_help: "<blue><bold>All available commands:"
+help_base: "<white>* <yellow>%cmd%</yellow> - <gray>%help%</gray>"
+help_register: "command to register"
+help_login: "command to log in"
+help_authguard_database: "command to manage the database"
+help_authguard_reload: "command to reload the plugin"
+
+authguard_usage: "<red>Correct usage: <yellow>/authguard %args%</yellow>"
+authguard_reload: "<green>Plugin reloaded successfully."
+authguard_reload_error: "<red>Could not reload plugin! Error code: <bold>%error_code%"
+authguard_database_unknown_player: "<red>Player not found: <yellow><bold>%player%"
+authguard_database_remove_success: "<green>Successfully removed player <yellow><bold>%player%</bold></yellow> from the database."
+authguard_database_remove_error: "<red>Could not remove player <yellow><bold>%player%</bold></yellow> from the database."
+authguard_unknown_command: "<red>Invalid command: <yellow><bold>%args%"
+authguard_unknown_subcommand: "<red>Invalid subcommand!"
+no_permission_message: "<red>You don't have permission to use this command!"
+
+login_password_error: "<red>The entered password is incorrect!"
+login_success_message: "<bold><green>Successfully logged in!"
+login_usage: "<red>Correct usage: <gold><bold>/login %args%"
+login_before_register_message: "<red>You must register before you can log in!"
+login_no_need_message: "<gray>You are already logged in."
+
+premium_message: "<green>We've detected that you're using a premium account. Type <aqua><bold>/premium</bold><green> to enable automatic logins."
+
+register_passwords_error: "<red>The entered passwords do not match!"
+register_password_length_error: "<red>Your password must be between <bold>6</bold> and <bold>32</bold> characters long!"
+register_captcha_error: "<red>The entered captcha is incorrect!"
+register_usage: "<red>Correct usage: <gold><bold>/register %args%"
+register_after_login_message: "<gray>You are already registered. You can now log in."
+register_no_need: "<gray>You are already logged in. You don't need to register."
+
+password: "password"
+
+captcha_message: "<bold><gold>Your captcha"
+captcha: "captcha"
+
+kick_timeout: "<red>You were kicked for taking too long to log in!"
+kick_login_tries: "<red>You were kicked after too many failed login attempts!"
+kick_error: "<red>Oops... you encountered an error <bold>%error_code%</bold>... \n\n<bold><yellow>Reconnect to the server."
+kick_register_success: "<green>Registration completed successfully. \n\n<yellow>Reconnect to the server."
+kick_database_remove: "<green>You were removed from the database. \n\n<yellow>Reconnect to the server and register again."

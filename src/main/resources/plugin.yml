@@ -1,0 +1,4 @@
+name: SimpleLogin
+version: '${version}'
+main: org.bartekkansy.simplelogin.SimpleLogin
+api-version: '1.21'
