@@ -1,4 +1,27 @@
-name: SimpleLogin
+name: AuthGuard
 version: '${version}'
-main: org.bartekkansy.simplelogin.SimpleLogin
+main: org.bartekkansy.authguard.AuthGuard
 api-version: '1.21'
+authors: ["Bartosz Kansy"]
+description: "A lightweight Minecraft authentication plugin that allows players to register and log in with a password."
+
+commands:
+  authguard:
+    description: Main command for Auth Guard plugin.
+    permission: authguard.admin
+  login:
+    description: Command to login on server.
+  register:
+    description: Command to register on server.
+  changepass:
+    description: Command to change password on server
+
+permissions:
+  authguard.*:
+    description: Gives access to all Auth Guard permissions
+    children:
+      authguard.admin: true
+
+  authguard.admin:
+    description: Admin permission for Auth Guard
+    default: op

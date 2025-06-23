@@ -1,9 +1,10 @@
-package org.bartekkansy.simplelogin.commands;
+package org.bartekkansy.authguard.commands;
 
-import org.bartekkansy.simplelogin.AuthGuard;
-import org.bartekkansy.simplelogin.database.DatabaseManager;
-import org.bartekkansy.simplelogin.managers.LangManager;
-import org.bartekkansy.simplelogin.managers.MessageManager;
+import org.bartekkansy.authguard.AuthGuard;
+import org.bartekkansy.authguard.database.DatabaseManager;
+import org.bartekkansy.authguard.event.EventDispatcher;
+import org.bartekkansy.authguard.managers.LangManager;
+import org.bartekkansy.authguard.managers.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,6 +35,24 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         this.databaseManager = this.plugin.getDatabaseManager();
     }
 
+    private void sendCommandHelp(CommandSender sender, String command, String key) {
+        String s1 = this.langManager.getString(key);
+        String s2 = this.langManager.getString("help_base", Map.of("cmd", command, "help", s1));
+        sender.sendMessage(MessageManager.toLegacy(s2));
+    }
+
+    private void displayHelp(CommandSender sender) {
+        this.messageManager.sendMessageToSender(sender, "authguard_help", Map.of());
+
+        sendCommandHelp(sender, "/register", "help_register");
+        sendCommandHelp(sender, "/login", "help_login");
+
+        sender.sendMessage();
+
+        sendCommandHelp(sender, "/authguard database", "help_authguard_database");
+        sendCommandHelp(sender, "/authguard reload", "help_authguard_reload");
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("authguard.admin")) {
@@ -42,18 +61,20 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
-            this.messageManager.sendMessageToSender(sender, "authguard_usage", Map.of("args", "<database|reload|help>"));
+            this.messageManager.sendMessageToSender(sender, "authguard_usage", Map.of("args", "<database | reload | help>"));
             return true;
         }
 
         switch (args[0].toLowerCase()) {
             case "help":
-                this.messageManager.sendMessageToSender(sender, "authguard_help", Map.of());
+                displayHelp(sender);
                 break;
 
             case "reload":
                 this.plugin.reloadConfig();
+                this.langManager.reload();
                 this.databaseManager.disconnect();
+                EventDispatcher.init();
                 try {
                     this.databaseManager.connect();
                 } catch (SQLException e) {
@@ -75,20 +96,31 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                         return true;
                     }
                     String targetPlayer = args[2];
-                    UUID uuid = UUID.fromString(targetPlayer);
-                    Player player = Bukkit.getPlayer(uuid);
-                    if (player == null) player = (Player) Bukkit.getPlayer(targetPlayer);
+                    UUID uuid = null;
 
-                    if (player == null) {
+                    // Try to parse as UUID
+                    try {
+                        uuid = UUID.fromString(targetPlayer);
+                    } catch (IllegalArgumentException e) {
+                        // Not a UUID, try to get UUID by player name
+                        Player onlinePlayer = Bukkit.getPlayerExact(targetPlayer);
+                        if (onlinePlayer != null) {
+                            uuid = onlinePlayer.getUniqueId();
+                        }
+                    }
+
+                    if (uuid == null) {
                         this.messageManager.sendMessageToSender(sender, "authguard_database_unknown_player", Map.of("player", targetPlayer));
                         return true;
                     }
 
                     // Remove player from database here
                     try {
-                        boolean result = this.databaseManager.removePlayer(player.getUniqueId().toString());
+                        boolean result = this.databaseManager.removePlayer(uuid.toString());
                         if (result) {
-                            this.messageManager.sendMessageToSender(sender, "authguard_database_remove_success", Map.of("player", player.getName()));
+                            Player player = Bukkit.getPlayer(uuid);
+                            if (player != null) player.kickPlayer(MessageManager.toLegacy(this.langManager.getString("kick_database_remove")));
+                            this.messageManager.sendMessageToSender(sender, "authguard_database_remove_success", Map.of("player", targetPlayer));
                             return true;
                         } else {
                             this.messageManager.sendMessageToSender(sender, "authguard_database_remove_error", Map.of("player", targetPlayer));

@@ -1,0 +1,32 @@
+# --- Auth Guard section
+# These settings are fully changeable by user
+# you can customize this plugin as you want
+main:
+  language: en # Supported languages: en, pl, de, ru
+  message_prefix: '<bold><gradient:gold:red>Auth Guard</gradient></bold> <dark_gray>>> ' # Prefix that will be at the start of every message from this plugin, '' for no prefix
+  kick_timeout: 60 # Time (in seconds) after player will be kicked for not logging in or registering
+  spawn_location: WORLD_SPAWN # Spawn location of player on join > WORLD_SPAWN - spawn set on world | LAST - last position of player
+
+  # Register section
+  register:
+    repeat_password: true # If true player must write password twice to confirm it
+    captcha: true # If true player must write captcha from screen
+
+  # Login section
+  login:
+    tries: 3 # Tries that player will have to log in, in other case kick player
+
+  # You can disable these sounds and, if you want, add your own custom sounds through Skript, Bukkit plugin or other things
+  sounds:
+    player_join: true # When player joins server
+    player_login: true # When player log in with success
+
+# --- Database section
+# If you don't know what these settings are then DO NOT CHANGE THEM
+# it could cause some serious problems
+database:
+  host: 'localhost'
+  port: 3306
+  name: 'AuthGuard'
+  username: 'root'
+  password: ''

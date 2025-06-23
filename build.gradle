@@ -1,9 +1,10 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'  // for shading/relocation
 }
 
 group = 'org.bartekkansy'
-version = '1.0'
+version = '1.0.1'
 
 repositories {
     mavenCentral()
@@ -15,19 +16,43 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        url = uri('https://hub.spigotmc.org/nexus/content/groups/public/')
+    }
+    maven { url 'https://repo.skriptlang.org/releases' }
 }
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT"
+
+    // MiniMessage
+    implementation 'net.kyori:adventure-api:4.15.0'
+    implementation 'net.kyori:adventure-platform-bukkit:4.3.0'
+    implementation 'net.kyori:adventure-text-minimessage:4.15.0'
+
+    // bStats
+    implementation 'org.bstats:bstats-bukkit:3.0.2'
+
+    // Skript
+    compileOnly 'com.github.SkriptLang:Skript:2.7.0'  // Latest Skript version
 }
 
-def targetJavaVersion = 21
+shadowJar {
+    // Relocate bStats package to avoid conflicts, like Maven shade plugin relocation
+    relocate 'org.bstats', 'me.name.util'
+}
+
+tasks.build {
+    dependsOn shadowJar
+}
+
+def targetJavaVersion = 17
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    sourceCompatibility = JavaVersion.toVersion(targetJavaVersion)
+    targetCompatibility = JavaVersion.toVersion(targetJavaVersion)
+
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
 }
 

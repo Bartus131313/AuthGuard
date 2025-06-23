@@ -4,11 +4,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PlayerRegisterSuccessEvent extends Event {
+public class PlayerRegisteredEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final Player player;
 
-    public PlayerRegisterSuccessEvent(Player player) {
+    public PlayerRegisteredEvent(Player player) {
         this.player = player;
     }
 

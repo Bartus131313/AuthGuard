@@ -1,6 +1,6 @@
-package org.bartekkansy.simplelogin.database;
+package org.bartekkansy.authguard.database;
 
-import org.bartekkansy.simplelogin.AuthGuard;
+import org.bartekkansy.authguard.AuthGuard;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public class DatabaseManager {
 
         if ("localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host) || "0.0.0.0".equals(host)) {
             // Use SQLite local file database
-            String filePath = String.format("plugins/SimpleLogin/%s.db", this.databaseName); // adjust path as needed
+            String filePath = String.format("plugins/AuthGuard/%s.db", this.databaseName); // adjust path as needed
             String url = "jdbc:sqlite:" + filePath;
             connection = DriverManager.getConnection(url);
         } else {

@@ -1,4 +1,4 @@
-package org.bartekkansy.authguard;
+package org.bartekkansy.authguard.utils;
 
 import java.security.SecureRandom;
 

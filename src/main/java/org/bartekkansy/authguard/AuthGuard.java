@@ -1,12 +1,16 @@
-package org.bartekkansy.simplelogin;
+package org.bartekkansy.authguard;
 
-import org.bartekkansy.simplelogin.commands.LoginCommand;
-import org.bartekkansy.simplelogin.commands.MainCommand;
-import org.bartekkansy.simplelogin.commands.RegisterCommand;
-import org.bartekkansy.simplelogin.database.DatabaseManager;
-import org.bartekkansy.simplelogin.event.EventListener;
-import org.bartekkansy.simplelogin.managers.LangManager;
-import org.bartekkansy.simplelogin.managers.MessageManager;
+import org.bartekkansy.authguard.commands.ChangePassCommand;
+import org.bartekkansy.authguard.commands.LoginCommand;
+import org.bartekkansy.authguard.commands.MainCommand;
+import org.bartekkansy.authguard.commands.RegisterCommand;
+import org.bartekkansy.authguard.database.DatabaseManager;
+import org.bartekkansy.authguard.event.EventListener;
+import org.bartekkansy.authguard.event.EventDispatcher;
+import org.bartekkansy.authguard.managers.LangManager;
+import org.bartekkansy.authguard.managers.MessageManager;
+import org.bartekkansy.authguard.managers.MetricsManager;
+import org.bartekkansy.authguard.utils.LoginState;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,13 +20,36 @@ import java.util.UUID;
 public final class AuthGuard extends JavaPlugin {
 
     private DatabaseManager databaseManager;
-    private LangManager langManager;
 
+    private LangManager langManager;
     private MessageManager messageManager;
 
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
+
+        long startTime = System.currentTimeMillis();
+
+        // Initialize Language Manager
+        this.langManager = new LangManager(this);
+
+        // Initialize Message Manager
+        this.messageManager = new MessageManager(this);
+
+        // Log when plugin is enabled
+        this.messageManager.sendMessageToConsole("");
+        this.messageManager.sendMessageToConsole("   <gold> █████<gray>╗  <red>██████<gray>╗");
+        this.messageManager.sendMessageToConsole("   <gold>██<gray>╔══</gray>██<gray>╗</gray><red>██<gray>╔════╝");
+        this.messageManager.sendMessageToConsole("   <gold>███████<gray>║<red>██<gray>║</gray>  ███<gray>╗    <gold>AuthGuard</gold> <red>v" + this.getDescription().getVersion());
+        this.messageManager.sendMessageToConsole("   <gold>██<gray>╔══</gray>██<gray>║</gray><red>██<gray>║<gray>   <red>██<gray>║    <yellow>Created by</yellow> <blue>" + String.join(", ", this.getDescription().getAuthors()));
+        this.messageManager.sendMessageToConsole("   <gold>██<gray>║</gray>  ██<gray>║╚</gray><red>██████<gray>╔╝");
+        this.messageManager.sendMessageToConsole("   <gray>╚═╝  ╚═╝ ╚═════╝");
+        this.messageManager.sendMessageToConsole("");
+
+        this.messageManager.sendMessageToConsole("<white> * Initializing Skript...");
+        EventDispatcher.init();
+
+        this.messageManager.sendMessageToConsole("<white> * Initializing database...");
 
         // Initialize Database Manager
         databaseManager = new DatabaseManager(this);
@@ -36,30 +63,32 @@ public final class AuthGuard extends JavaPlugin {
         }
         ///
 
-        // Initialize Language Manager
-        this.langManager = new LangManager(this);
-
-        // Initialize Message Manager
-        this.messageManager = new MessageManager(this);
-
         // Register all events
+        this.messageManager.sendMessageToConsole("<white> * Initializing events...");
         getServer().getPluginManager().registerEvents(new EventListener(this), this);
+
+        this.messageManager.sendMessageToConsole("<white> * Initializing commands...");
 
         // Register all commands
         this.getCommand("register").setExecutor(new RegisterCommand(this));
         this.getCommand("login").setExecutor(new LoginCommand(this));
-        this.getCommand("simplelogin").setExecutor(new MainCommand(this));
+        this.getCommand("changepass").setExecutor(new ChangePassCommand(this));
+        this.getCommand("authguard").setExecutor(new MainCommand(this));
 
-        // Log when plugin is enabled
-        getLogger().info("SimpleLogin enabled!");
+        long eta = System.currentTimeMillis() - startTime;
+
+        this.messageManager.sendMessageToConsole(String.format("<white> * Loading complete! (%d ms)", eta));
+
+        // Initialize bStats - for data collection
+        MetricsManager.start(this);
     }
 
     public static boolean isPlayerLoggedIn(Player player) {
-        return player.getMetadata("logged_in").getFirst().asBoolean();
+        return player.getMetadata("logged_in").get(0).asBoolean();
     }
 
     public static LoginState getPlayerLoginState(Player player) {
-        return LoginState.valueOf(player.getMetadata("login_state").getFirst().asString());
+        return LoginState.valueOf(player.getMetadata("login_state").get(0).asString());
     }
 
     public boolean isPlayerPremium(Player player) {
@@ -72,10 +101,14 @@ public final class AuthGuard extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Disconnect database
         this.databaseManager.disconnect();
 
+        // Shutdown bStats
+        MetricsManager.shutdown();
+
         // Plugin shutdown logic
-        getLogger().info("SimpleLogin disabled!");
+        getLogger().info("AuthGuard disabled!");
     }
 
     public DatabaseManager getDatabaseManager() {

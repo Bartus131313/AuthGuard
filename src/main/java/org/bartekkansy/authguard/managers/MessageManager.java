@@ -1,10 +1,10 @@
-package org.bartekkansy.simplelogin.managers;
+package org.bartekkansy.authguard.managers;
 
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bartekkansy.simplelogin.AuthGuard;
+import org.bartekkansy.authguard.AuthGuard;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -59,7 +59,7 @@ public class MessageManager {
     }
 
     public void sendMessageToConsole(String message) {
-        Component component = miniMessage.deserialize(messagePrefix + "<reset>" + message);
+        Component component = miniMessage.deserialize(message);
         audiences.console().sendMessage(component);
     }
 

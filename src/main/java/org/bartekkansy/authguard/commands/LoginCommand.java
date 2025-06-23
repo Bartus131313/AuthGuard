@@ -1,10 +1,12 @@
-package org.bartekkansy.simplelogin.commands;
+package org.bartekkansy.authguard.commands;
 
-import org.bartekkansy.simplelogin.managers.LangManager;
-import org.bartekkansy.simplelogin.LoginState;
-import org.bartekkansy.simplelogin.managers.MessageManager;
-import org.bartekkansy.simplelogin.AuthGuard;
-import org.bartekkansy.simplelogin.database.DatabaseManager;
+import org.bartekkansy.authguard.event.EventDispatcher;
+import org.bartekkansy.authguard.event.custom.PlayerLoggedInEvent;
+import org.bartekkansy.authguard.managers.LangManager;
+import org.bartekkansy.authguard.utils.LoginState;
+import org.bartekkansy.authguard.managers.MessageManager;
+import org.bartekkansy.authguard.AuthGuard;
+import org.bartekkansy.authguard.database.DatabaseManager;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -49,7 +51,13 @@ public class LoginCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean onLoginSuccess(Player player) {
-        player.playSound(player, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 1.0f, 1.0f);
+        // Send event through Skript
+        EventDispatcher.fireEvent(new PlayerLoggedInEvent(player));
+
+        // Check if player_join sound is enabled
+        if (plugin.getConfig().getBoolean("main.sounds.player_join"))
+            player.playSound(player, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 0.5f, 1.0f);
+
         player.setMetadata("logged_in", new FixedMetadataValue(this.plugin, true));
         this.messageManager.sendMessageToPlayer(player, "login_success_message", Map.of());
 

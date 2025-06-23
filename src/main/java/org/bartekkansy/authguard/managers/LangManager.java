@@ -1,4 +1,4 @@
-package org.bartekkansy.simplelogin.managers;
+package org.bartekkansy.authguard.managers;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,9 +17,12 @@ public class LangManager {
     public LangManager(JavaPlugin plugin) {
         this.plugin = plugin;
 
-        FileConfiguration config = this.plugin.getConfig();
+        reload();
+    }
 
-        loadLangFile(String.format("lang_%s.yml", config.getString("main.language")));
+    public void reload() {
+        FileConfiguration config = this.plugin.getConfig();
+        loadLangFile(String.format("translations/lang_%s.yml", config.getString("main.language")));
     }
 
     public void loadLangFile(String fileName) {

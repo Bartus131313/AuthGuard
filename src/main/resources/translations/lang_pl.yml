@@ -8,6 +8,13 @@ help_login: "komenda do logowania się"
 help_authguard_database: "komenda do obsługi bazy danych"
 help_authguard_reload: "komenda do przeładowywania pluginu"
 
+bossbar_timeout: "<blue>Pozostały czas: <gold><bold>%time% s</bold>"
+
+changepass_login_error: "<red>Musisz być zalogowany, aby móc zmienić hasło!"
+changepass_usage: "<red>Poprawne użycie komendy: <yellow>/changepass <obecne hasło> <nowe hasło> <nowe hasło> %args%</yellow>"
+changepass_current_error: "<red>Podane obecne hasło jest nieprawidłowe!"
+changepass_new_error: "<red>Podane nowe hasła nie są ze sobą zgodne!"
+
 authguard_usage: "<red>Poprawne użycie komendy: <yellow>/authguard %args%</yellow>"
 authguard_reload: "<green>Pomyślnie przeładowano plugin."
 authguard_reload_error: "<red>Nie można przeładować pluginu! kod błędu: <bold>%error_code%"
@@ -40,6 +47,8 @@ captcha: "captcha"
 
 kick_timeout: "<red>Zostałeś wyrzucony po zbyt długim czasie logowania się!"
 kick_login_tries: "<red>Zostałeś wyrzucony po zbyt wielu nieudanych próbach logowania!"
+
 kick_error: "<red>Ups... napotkałeś na błąd <bold>%error_code%</bold>... \n\n<bold><yellow>Wejdź ponownie na serwer."
-kick_register_success: "<green>Rejestracja ukończona pomyślnie. \n\n<yellow>Wejdź ponownie na serwer."
+kick_register_success: "<green>Rejestracja ukończona pomyślnie. \n\n<yellow>Wejdź ponownie na serwer i zaloguj się."
 kick_database_remove: "<green>Zostałeś usunięty z bazy danych. \n\n<yellow>Wejdź ponownie na serwer i zarejestruj się."
+kick_changepass_success: "<green>Zmniana hassła ukończona pomyślnie. \n\n<yellow>Wejdź ponownie na serwer i zaloguj się."

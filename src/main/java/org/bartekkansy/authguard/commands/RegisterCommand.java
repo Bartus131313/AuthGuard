@@ -1,9 +1,13 @@
-package org.bartekkansy.simplelogin.commands;
+package org.bartekkansy.authguard.commands;
 
-import org.bartekkansy.simplelogin.*;
-import org.bartekkansy.simplelogin.database.DatabaseManager;
-import org.bartekkansy.simplelogin.managers.LangManager;
-import org.bartekkansy.simplelogin.managers.MessageManager;
+import org.bartekkansy.authguard.*;
+import org.bartekkansy.authguard.database.DatabaseManager;
+import org.bartekkansy.authguard.event.EventDispatcher;
+import org.bartekkansy.authguard.event.custom.PlayerRegisteredEvent;
+import org.bartekkansy.authguard.managers.LangManager;
+import org.bartekkansy.authguard.managers.MessageManager;
+import org.bartekkansy.authguard.utils.CaptchaGenerator;
+import org.bartekkansy.authguard.utils.LoginState;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -103,6 +107,10 @@ public class RegisterCommand implements CommandExecutor, TabCompleter {
 
         try {
             this.databaseManager.savePlayerPassword(player.getUniqueId().toString(), password);
+
+            // Send event through Skript
+            EventDispatcher.fireEvent(new PlayerRegisteredEvent(player));
+
             player.kickPlayer(MessageManager.toLegacy(this.langManager.getString("kick_register_success")));
 
         } catch (SQLException e) {

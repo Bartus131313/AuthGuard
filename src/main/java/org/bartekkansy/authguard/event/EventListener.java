@@ -1,27 +1,30 @@
-package org.bartekkansy.simplelogin.event;
+package org.bartekkansy.authguard.event;
 
-import org.bartekkansy.simplelogin.managers.LangManager;
-import org.bartekkansy.simplelogin.LoginState;
-import org.bartekkansy.simplelogin.managers.MessageManager;
-import org.bartekkansy.simplelogin.AuthGuard;
-import org.bartekkansy.simplelogin.commands.RegisterCommand;
-import org.bartekkansy.simplelogin.database.DatabaseManager;
+import org.bartekkansy.authguard.managers.LangManager;
+import org.bartekkansy.authguard.utils.LoginState;
+import org.bartekkansy.authguard.managers.MessageManager;
+import org.bartekkansy.authguard.AuthGuard;
+import org.bartekkansy.authguard.commands.RegisterCommand;
+import org.bartekkansy.authguard.database.DatabaseManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EventListener implements Listener {
@@ -31,6 +34,8 @@ public class EventListener implements Listener {
     private DatabaseManager databaseManager;
     private LangManager langManager;
     private MessageManager messageManager;
+
+    private Map<Player, BossBar> timeLeftBossBars = new HashMap<>();
 
     public EventListener(AuthGuard plugin) {
         this.plugin = plugin;
@@ -48,7 +53,8 @@ public class EventListener implements Listener {
         player.setVelocity(new Vector());
 
         // Play sound on start
-        player.playSound(player, Sound.ENTITY_CHICKEN_EGG, 1.0f, 1.0f);
+        if (plugin.getConfig().getBoolean("main.sounds.player_join"))
+            player.playSound(player, Sound.ENTITY_CHICKEN_EGG, 0.8f, 1.0f);
 
         // Teleport player on spawn
         String spawnLocation = this.plugin.getConfig().getString("main.spawn_location");
@@ -122,12 +128,25 @@ public class EventListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         if (!AuthGuard.isPlayerLoggedIn(event.getPlayer())) event.setCancelled(true);
     }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+
+        BossBar bar = timeLeftBossBars.get(player);
+        if (bar != null) {
+            bar.removeAll();
+            bar.setVisible(false);
+            timeLeftBossBars.remove(player);
+        }
+    }
     ///
 
     private void kickPlayerAfterTime(Player player, int timeInSeconds) {
-        player.setMetadata("temp_lvl", new FixedMetadataValue(this.plugin, player.getLevel()));
-        player.setMetadata("temp_exp", new FixedMetadataValue(this.plugin, player.getExp()));
-        player.setMetadata("temp_health", new FixedMetadataValue(this.plugin, player.getHealth()));
+        String title = this.langManager.getString("bossbar_timeout", Map.of("time", String.valueOf(timeInSeconds)));
+        BossBar bar = Bukkit.createBossBar(MessageManager.toLegacy(title), BarColor.PINK, BarStyle.SEGMENTED_20, BarFlag.DARKEN_SKY, BarFlag.CREATE_FOG);
+        bar.addPlayer(player);
+        timeLeftBossBars.put(player, bar);
 
         new BukkitRunnable() {
             int secondsLeft = timeInSeconds;
@@ -135,42 +154,33 @@ public class EventListener implements Listener {
             @Override
             public void run() {
                 if (!player.isOnline() || AuthGuard.isPlayerLoggedIn(player)) {
-                    player.setLevel(player.getMetadata("temp_lvl").get(0).asInt());
-                    player.setExp(player.getMetadata("temp_exp").get(0).asFloat());
-                    player.setHealth(player.getMetadata("temp_health").get(0).asDouble());
-
-                    player.removeMetadata("temp_lvl", plugin);
-                    player.removeMetadata("temp_exp", plugin);
-                    player.removeMetadata("temp_health", plugin);
+                    bar.removePlayer(player);
+                    bar.setVisible(false);
+                    timeLeftBossBars.remove(player);
 
                     cancel();
                     return;
                 }
 
-                // Update XP bar to show countdown progress:
-                // XP level can be the seconds left,
-                // XP progress is fraction of second passed in the current second.
-                player.setLevel(secondsLeft);
+                bar.setProgress((double) secondsLeft / timeInSeconds);
 
-                // Set XP progress between 0.0 and 1.0 for smooth bar
-                // We'll keep it simple: progress goes from 1 (full) to 0 (empty)
-                player.setExp(secondsLeft / (float) timeInSeconds);
+                String title = langManager.getString("bossbar_timeout", Map.of("time", String.valueOf(secondsLeft)));
+                bar.setTitle(MessageManager.toLegacy(title));
 
                 boolean loggedIn = AuthGuard.isPlayerLoggedIn(player);
                 if (loggedIn) {
-                    // Player logged in, reset everything
-                    player.setLevel(player.getMetadata("temp_lvl").get(0).asInt());
-                    player.setExp(player.getMetadata("temp_exp").get(0).asFloat());
-                    player.setHealth(player.getMetadata("temp_health").get(0).asDouble());
-
-                    player.removeMetadata("temp_lvl", plugin);
-                    player.removeMetadata("temp_exp", plugin);
-                    player.removeMetadata("temp_health", plugin);
+                    bar.removeAll();
+                    bar.setVisible(false);
+                    timeLeftBossBars.remove(player);
 
                     cancel();
                     return;
 
                 } else if (secondsLeft <= 0) {
+                    bar.removeAll();
+                    bar.setVisible(false);
+                    timeLeftBossBars.remove(player);
+
                     player.kickPlayer(MessageManager.toLegacy(langManager.getString("kick_timeout")));
 
                     cancel();
@@ -180,7 +190,6 @@ public class EventListener implements Listener {
                 // Play tick sound
                 if (secondsLeft % 5 == 0 && secondsLeft != timeInSeconds) {
                     player.playSound(player, Sound.BLOCK_NOTE_BLOCK_HAT, 1.0f, 1.0f);
-                    // displayWelcomeMessage(player);
                 }
 
                 secondsLeft--;
