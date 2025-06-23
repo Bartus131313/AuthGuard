@@ -108,8 +108,8 @@ public class RegisterCommand implements CommandExecutor, TabCompleter {
         try {
             this.databaseManager.savePlayerPassword(player.getUniqueId().toString(), password);
 
-            // Send event through Skript
-            EventDispatcher.fireEvent(new PlayerRegisteredEvent(player));
+            // Send event
+            AuthGuard.fireEvent(new PlayerRegisteredEvent(player));
 
             player.kickPlayer(MessageManager.toLegacy(this.langManager.getString("kick_register_success")));
 

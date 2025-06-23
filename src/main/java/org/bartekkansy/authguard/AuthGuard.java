@@ -11,7 +11,10 @@ import org.bartekkansy.authguard.managers.LangManager;
 import org.bartekkansy.authguard.managers.MessageManager;
 import org.bartekkansy.authguard.managers.MetricsManager;
 import org.bartekkansy.authguard.utils.LoginState;
+import org.bartekkansy.authguard.utils.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -47,7 +50,7 @@ public final class AuthGuard extends JavaPlugin {
         this.messageManager.sendMessageToConsole("");
 
         this.messageManager.sendMessageToConsole("<white> * Initializing Skript...");
-        EventDispatcher.init();
+        initEventDispatcher();
 
         this.messageManager.sendMessageToConsole("<white> * Initializing database...");
 
@@ -81,6 +84,21 @@ public final class AuthGuard extends JavaPlugin {
 
         // Initialize bStats - for data collection
         MetricsManager.start(this);
+    }
+
+    public static void initEventDispatcher() {
+        if (!Util.isPluginEnabled("Skript")) {
+            Bukkit.getLogger().warning("Skript plugin not found or not enabled — Skript events will not be dispatched.");
+            return;
+        }
+
+        EventDispatcher.init();
+    }
+
+    public static void fireEvent(Event event) {
+        if (!Util.isPluginEnabled("Skript")) return;
+
+        EventDispatcher.fireEvent(event);
     }
 
     public static boolean isPlayerLoggedIn(Player player) {

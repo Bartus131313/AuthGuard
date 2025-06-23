@@ -2,7 +2,6 @@ package org.bartekkansy.authguard.managers;
 
 import org.bartekkansy.authguard.AuthGuard;
 import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 
 public class MetricsManager {

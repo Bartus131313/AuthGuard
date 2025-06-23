@@ -9,7 +9,6 @@ import java.util.Map;
 
 public class LangManager {
 
-    private File langFile;
     private FileConfiguration langConfig;
 
     private final JavaPlugin plugin;
@@ -26,7 +25,7 @@ public class LangManager {
     }
 
     public void loadLangFile(String fileName) {
-        langFile = new File(plugin.getDataFolder(), fileName);
+        File langFile = new File(plugin.getDataFolder(), fileName);
         if (!langFile.exists()) {
             plugin.saveResource(fileName, false); // copy from jar to plugin folder
         }

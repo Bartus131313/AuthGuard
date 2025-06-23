@@ -51,11 +51,11 @@ public class LoginCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean onLoginSuccess(Player player) {
-        // Send event through Skript
-        EventDispatcher.fireEvent(new PlayerLoggedInEvent(player));
+        // Send event
+        AuthGuard.fireEvent(new PlayerLoggedInEvent(player));
 
         // Check if player_join sound is enabled
-        if (plugin.getConfig().getBoolean("main.sounds.player_join"))
+        if (plugin.getConfig().getBoolean("main.sounds.player_login"))
             player.playSound(player, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 0.5f, 1.0f);
 
         player.setMetadata("logged_in", new FixedMetadataValue(this.plugin, true));
