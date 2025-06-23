@@ -1,6 +1,12 @@
-# AuthGuard
-
-AuthGuard is an authentication plugin for Spigot/Bukkit servers, designed to secure offline-mode servers by requiring players to register and log in. It's lightweight, highly configurable, and supports multiple languages out of the box.
+<div style="text-align: center;">
+    <h1>AuthGuard</h1>
+    <a href="https://www.curseforge.com/minecraft/bukkit-plugins/auth-guard"><img src="https://img.shields.io/curseforge/v/1290825" alt="CurseForge"></a>
+    <a href="https://www.curseforge.com/minecraft/bukkit-plugins/auth-guard"><img src="https://img.shields.io/curseforge/dt/1290825" alt="CurseForge"></a>
+    <p></p>
+    <a href="https://choosealicense.com/licenses/mit/"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
+    <p></p>
+    AuthGuard is an authentication plugin for Spigot/Bukkit servers, designed to secure offline-mode servers by requiring players to register and log in. It's lightweight, highly configurable, and supports multiple languages out of the box.
+</div>
 
 ## Features
 
