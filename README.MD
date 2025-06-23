@@ -16,7 +16,7 @@
 - **CAPTCHA System:** Optional CAPTCHA verification during registration to prevent bot attacks.
 - **Multi-Language Support:** All player-facing messages are configurable and can be translated. Default languages include English (en), German (de), Polish (pl), and Russian (ru).
 - **Action Blocking:** Prevents unauthenticated players from moving, interacting, taking or dealing damage, and managing items.
-- **Login Timeout:** Automatically kicks players who fail to log in or register within a configurable time limit, with a visual countdown on the XP bar.
+- **Login Timeout:** Automatically kicks players who fail to log in or register within a configurable time limit, with a visual countdown on the boss bar.
 - **Login Attempts:** Limits the number of failed login attempts before a player is kicked.
 - **Admin Tools:** Includes commands for reloading the plugin's configuration and managing player data in the database.
 - **Customizable Messages:** Utilizes MiniMessage format for all plugin messages, allowing for full color and style customization.
