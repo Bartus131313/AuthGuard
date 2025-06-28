@@ -10,6 +10,7 @@ import org.bartekkansy.authguard.event.EventDispatcher;
 import org.bartekkansy.authguard.managers.LangManager;
 import org.bartekkansy.authguard.managers.MessageManager;
 import org.bartekkansy.authguard.managers.MetricsManager;
+import org.bartekkansy.authguard.placeholders.AuthGuardPlaceholder;
 import org.bartekkansy.authguard.utils.LoginState;
 import org.bartekkansy.authguard.utils.Util;
 import org.bukkit.Bukkit;
@@ -51,6 +52,16 @@ public final class AuthGuard extends JavaPlugin {
 
         this.messageManager.sendMessageToConsole("<white> * Initializing Skript...");
         initEventDispatcher();
+
+        this.messageManager.sendMessageToConsole("<white> * Initializing PlaceholderAPI...");
+        // Load PlaceholderAPI
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new AuthGuardPlaceholder(this).register();
+            this.messageManager.sendMessageToConsole("   AuthGuardPlaceholder registered!");
+
+        } else {
+            this.messageManager.sendMessageToConsole("<yellow>   Could not find PlaceholderAPI! Every placeholder in this plugin will not work...");
+        }
 
         this.messageManager.sendMessageToConsole("<white> * Initializing database...");
 
@@ -102,20 +113,31 @@ public final class AuthGuard extends JavaPlugin {
     }
 
     public static boolean isPlayerLoggedIn(Player player) {
-        return player.getMetadata("logged_in").get(0).asBoolean();
+        if (player.hasMetadata("logged_in"))
+            return player.getMetadata("logged_in").get(0).asBoolean();
+
+        return false;
+    }
+
+    public static boolean isPlayerRegistered(Player player) {
+        LoginState state = getPlayerLoginState(player);
+        return state == LoginState.LOGIN;
     }
 
     public static LoginState getPlayerLoginState(Player player) {
-        return LoginState.valueOf(player.getMetadata("login_state").get(0).asString());
+        if (player.hasMetadata("login_state"))
+            return LoginState.valueOf(player.getMetadata("login_state").get(0).asString());
+
+        return null;
     }
 
-    public boolean isPlayerPremium(Player player) {
-        // Offline mode UUIDs are generated with this pattern: UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes())
-        // So, if the UUID matches the offline mode pattern, player is not premium
-        UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes());
-
-        return !player.getUniqueId().equals(offlineUUID);
-    }
+//    public boolean isPlayerPremium(Player player) {
+//        // Offline mode UUIDs are generated with this pattern: UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes())
+//        // So, if the UUID matches the offline mode pattern, player is not premium
+//        UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes());
+//
+//        return !player.getUniqueId().equals(offlineUUID);
+//    }
 
     @Override
     public void onDisable() {

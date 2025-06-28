@@ -58,9 +58,13 @@
 4.  Edit the generated `config.yml` file in `/plugins/AuthGuard/` to configure the database and other settings.
 5.  Set your desired language in `config.yml` and reload the plugin or restart the server.
 
-## Configuration
+## PlaceholderAPI
+This plugin supports *PlaceholderAPI* and there are all available placeholders to use:
 
-The `config.yml` allows you to customize various aspects of the plugin:
+| Placeholder              | Output       | Description                               |
+| ------------------------ | ------------ | ----------------------------------------- |
+| `%authguard_logged_in%`  | `true/false` | Whether the player is currently logged in |
+| `%authguard_registered%` | `true/false` | Whether the player is registered          |
 
 ## Event Support: Bukkit & Skript
 
